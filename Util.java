@@ -1,4 +1,4 @@
-package util;
+package etu1840.framework.util;
 public class Util{
     public static String getUrlMapping(String url){
         String base_url="http://localhost:8080/framework/";
