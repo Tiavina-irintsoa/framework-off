@@ -1,6 +1,5 @@
-<?xml version="1.0" encoding="UTF-8"?>
 <!--
-  Licensed to the Apache Software Foundation (ASF) under one or more
+ Licensed to the Apache Software Foundation (ASF) under one or more
   contributor license agreements.  See the NOTICE file distributed with
   this work for additional information regarding copyright ownership.
   The ASF licenses this file to You under the Apache License, Version 2.0
@@ -15,19 +14,16 @@
   See the License for the specific language governing permissions and
   limitations under the License.
 -->
-<web-app xmlns="https://jakarta.ee/xml/ns/jakartaee"
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="https://jakarta.ee/xml/ns/jakartaee
-                      https://jakarta.ee/xml/ns/jakartaee/web-app_5_0.xsd"
-  version="5.0"
-  metadata-complete="true">
-
-  <servlet>
-      <servlet-name>FrontServlet</servlet-name>
-      <servlet-class>etu1840.framework.servlet.FrontServlet</servlet-class>
-    </servlet>
-    <servlet-mapping>
-        <servlet-name>FrontServlet</servlet-name>
-        <url-pattern>/*</url-pattern>
-    </servlet-mapping>
-</web-app>
+<%@ attribute name="color" %>
+<%@ attribute name="bgcolor" %>
+<%@ attribute name="title" %>
+<table border="1" bgcolor="${color}">
+  <tr>
+    <td><b>${title}</b></td>
+  </tr>
+  <tr>
+    <td bgcolor="${bgcolor}">
+      <jsp:doBody/>
+    </td>
+  </tr>
+</table>

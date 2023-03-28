@@ -4,8 +4,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Vector;
 public class MyPackage{
-    public MyPackage(){
-    }
+
     public Vector<Class<?>> getClasses(String packageName) throws ClassNotFoundException {
        Vector<Class<?>> classes=new Vector<Class<?>>();
         // Get a File object for the package
