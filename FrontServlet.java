@@ -5,7 +5,9 @@ import jakarta.servlet.http.*;
 import java.text.*;
 import java.util.*;
 import util.Util;
+import etu1840.framework.*;
 public class FrontServlet extends HttpServlet{
+    HashMap<String,Mapping> MappingUrls;
     protected void doGet(HttpServletRequest request, HttpServletResponse response)throws ServletException, IOException {
         processRequest(request,response);
     }
