@@ -10,7 +10,9 @@ import etu1840.framework.util.*;
 import java.lang.reflect.*;
 public class FrontServlet extends HttpServlet{
     HashMap<String,Mapping> MappingUrls;
+    String baseUrl;
     public void init() throws ServletException{
+        this.baseUrl=this.getInitParameter("baseUrl");
         String packagename="";
         this.MappingUrls=new HashMap<String,Mapping>();
         try{
@@ -39,16 +41,23 @@ public class FrontServlet extends HttpServlet{
     }
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)throws ServletException, IOException{
         PrintWriter out=response.getWriter();
-        String applicationPath = request.getServletContext().getRealPath("");
         String url=request.getRequestURL().toString();
-        out.print("url:");
-        out.println(Util.getUrlMapping(url));   
-
-        for (Map.Entry<String, Mapping> entry : MappingUrls.entrySet()) {
-            String key = entry.getKey();
-            Mapping value = entry.getValue();
-            out.println(key+":"+value.getClassName()+"."+value.getMethod());
+        String urlmapping=Util.getUrlMapping(url,this.baseUrl);
+        
+        try {
+            Mapping mapping=this.MappingUrls.get(urlmapping);
+            if(mapping==null){
+                throw new Exception("Aucun mapping trouve pour "+urlmapping);
+            }
+            Class<?> classe=Class.forName(mapping.getClassName());
+            Constructor<?> constructor = classe.getConstructor();
+            Object classinstance=constructor.newInstance();
+            ModelView modelview=(ModelView) classe.getDeclaredMethod(mapping.getMethod()).invoke(classinstance);
+            System.out.println(modelview.getView());
+            RequestDispatcher dispat = request.getRequestDispatcher(modelview.getView());
+            dispat.forward(request,response);
+        } catch (Exception e) {
+            out.println(e.getMessage());
         }
-
     }
 }
