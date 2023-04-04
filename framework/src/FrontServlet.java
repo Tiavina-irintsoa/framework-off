@@ -43,7 +43,6 @@ public class FrontServlet extends HttpServlet{
         PrintWriter out=response.getWriter();
         String url=request.getRequestURL().toString();
         String urlmapping=Util.getUrlMapping(url,this.baseUrl);
-        
         try {
             Mapping mapping=this.MappingUrls.get(urlmapping);
             if(mapping==null){
@@ -53,7 +52,12 @@ public class FrontServlet extends HttpServlet{
             Constructor<?> constructor = classe.getConstructor();
             Object classinstance=constructor.newInstance();
             ModelView modelview=(ModelView) classe.getDeclaredMethod(mapping.getMethod()).invoke(classinstance);
-            System.out.println(modelview.getView());
+
+            if(modelview.getData()!=null){
+                for(Map.Entry<String,Object>  entry : modelview.getData().entrySet()){
+                    request.setAttribute(entry.getKey(),entry.getValue());
+                }
+            }
             RequestDispatcher dispat = request.getRequestDispatcher(modelview.getView());
             dispat.forward(request,response);
         } catch (Exception e) {
