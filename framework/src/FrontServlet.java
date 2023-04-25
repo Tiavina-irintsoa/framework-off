@@ -39,28 +39,46 @@ public class FrontServlet extends HttpServlet{
     protected void doPost(HttpServletRequest request, HttpServletResponse response)throws ServletException, IOException {
         processRequest(request,response);
     }
+    protected void setObject(Object object, HttpServletRequest request,Class<?> classe) throws Exception{
+    
+        Enumeration<String> parameterNames = request.getParameterNames();
+        while (parameterNames.hasMoreElements()) {
+            String paramName = parameterNames.nextElement();
+            Util.set(object,paramName,request.getParameter(paramName),classe);
+
+        }
+    }
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)throws ServletException, IOException{
         PrintWriter out=response.getWriter();
         String url=request.getRequestURL().toString();
         String urlmapping=Util.getUrlMapping(url,this.baseUrl);
         try {
             Mapping mapping=this.MappingUrls.get(urlmapping);
+            System.out.println(urlmapping);
             if(mapping==null){
                 throw new Exception("Aucun mapping trouve pour "+urlmapping);
             }
+            
+            
+
             Class<?> classe=Class.forName(mapping.getClassName());
             Constructor<?> constructor = classe.getConstructor();
             Object classinstance=constructor.newInstance();
+            setObject(classinstance,request,classe);
+
             ModelView modelview=(ModelView) classe.getDeclaredMethod(mapping.getMethod()).invoke(classinstance);
 
+            out.println("invoked");
+            
             if(modelview.getData()!=null){
-                for(Map.Entry<String,Object>  entry : modelview.getData().entrySet()){
+                for(Map.Entry<String,Object> entry : modelview.getData().entrySet()){
                     request.setAttribute(entry.getKey(),entry.getValue());
                 }
             }
             RequestDispatcher dispat = request.getRequestDispatcher(modelview.getView());
             dispat.forward(request,response);
         } catch (Exception e) {
+            e.printStackTrace();
             out.println(e.getMessage());
         }
     }
