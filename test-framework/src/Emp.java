@@ -2,11 +2,25 @@ package packages;
 import etu1840.framework.annotation.*;
 import etu1840.framework.util.*;
 import java.util.Vector;
+import java.util.Date;
 import java.lang.reflect.*;
 public class Emp{
+    private int id;
     private String nom;
     private String departement;
+    private Date dateEmbauche;
     Vector<Emp> empList;
+
+
+    public void setId(int id){
+        this.id=id;
+    }
+    public int getId(){
+        return this.id;
+    }
+    public void setDateEmbauche(Date date){
+        this.dateEmbauche=date;
+    }
 
     @Url(mapping="all")
     public ModelView all(){
@@ -85,6 +99,7 @@ public class Emp{
         emp6.setNom("Jessica Lee");
         emp6.setDepartement("Sales");
         empList.add(emp6);
+        
         ModelView resp=new ModelView("All.jsp");
         this.empList.add(this);
         resp.addItem("titre","Liste des employes");
@@ -94,7 +109,9 @@ public class Emp{
     public Emp(){
         
     }
-
+    public Date getDateEmbauche(){
+        return this.dateEmbauche;
+    }
     public String getNom() {
         return nom;
     }

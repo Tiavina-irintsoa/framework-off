@@ -17,7 +17,7 @@
     Welcome to all.jsp
     <%
         for(Emp emp:liste){
-            out.println(emp.getNom()+" "+emp.getDepartement());
+            out.println(emp.getNom()+" "+emp.getDepartement()+" "+emp.getDateEmbauche()+" "+emp.getId());
             out.println("<br>");
         }
     %>
