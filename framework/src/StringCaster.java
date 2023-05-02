@@ -10,6 +10,10 @@ import java.sql.Timestamp;
 public class StringCaster {
 
     public static Object cast(String input) {
+    	//try to cast a boolean
+    	try {
+            return Boolean.parseBoolean(input);
+        } catch (NumberFormatException e) {}
         // Try to cast to integer
         try {
             return Integer.parseInt(input);
