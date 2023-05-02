@@ -25,7 +25,7 @@ public class Util{
             if(f.getName().compareToIgnoreCase(field)==0){
                 Method setter=getSetter(classe,field);
 
-                setter.invoke(objet,value);
+                setter.invoke(objet,StringCaster.cast(value));
             }
         }
     }   
