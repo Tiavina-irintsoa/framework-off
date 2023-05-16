@@ -1,6 +1,5 @@
 <%@ page import="packages.*"%>
 <%@ page import="java.util.Vector"%>
-
 <%
     Vector<Emp> liste=(Vector<Emp>) request.getAttribute("liste");
     String title=(String) request.getAttribute("titre");
@@ -15,10 +14,6 @@
 </head>
 <body>
     <%
-        for(Emp emp:liste){
-            out.println(emp.getNom()+" "+emp.getDepartement()+" "+emp.getDateEmbauche()+" "+emp.getId());
-            out.println("<br>");
-        }
         out.println((String) request.getParameter("prenom"));
     %>
 </body>
