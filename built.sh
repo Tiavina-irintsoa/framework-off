@@ -11,7 +11,7 @@ cp framework.jar test-framework/WEB-INF/lib
 cd test-framework
 
 #compilation des classes du test framework
-javac -d  WEB-INF/classes src/*.java
+javac  -d  WEB-INF/classes -parameters  src/*.java 
 
 #creation du fichier .war
 jar -cf ../test-framework.war .

@@ -1,0 +1,200 @@
+<h2>
+    Prerequis
+</h2>
+<ul>
+    <li>
+        Version Java: Java 17 +
+    </li>
+    <li>
+        Version Apache Tomcat: 10+
+    </li>
+    <li>
+        Ajouter le fichier framework.jar dans la CLASSPATH 
+    </li>
+    <li>
+        Modifier le fichier web.xml du projet et ajouter l'ul du projet
+        <pre>
+            &lt;servlet&gt;
+                &lt;init-param&gt;
+                    &lt;param-name&gt;baseUrl&lt;/param-name&gt;
+                    &lt;param-value&gt;http://localhost:8080/test-framework/&lt;/param-value&gt;
+                &lt;/init-param&gt;
+                  &lt;servlet-name&gt;FrontServlet&lt;/servlet-name&gt;
+                  &lt;servlet-class&gt;etu1840.framework.servlet.FrontServlet&lt;/servlet-class&gt;
+            &lt;/servlet&gt;
+            &lt;servlet-mapping&gt;
+                &lt;servlet-name&gt;FrontServlet&lt;/servlet-name&gt;
+                &lt;url-pattern&gt;/&lt;/url-pattern&gt;
+            &lt;/servlet-mapping&gt;
+        </pre>
+    </li>
+</ul>
+<h2>
+    Classes et Types de base:
+</h2>
+<ul>
+    <li>
+        Les classes de base pris en compte par le framework:
+    </li>
+    <ul>
+        <li>
+            java.lang.Integer
+        </li>
+        <li>
+            java.lang.Float
+        </li>
+        <li>
+            java.lang.Double
+        </li>
+        <li>
+            java.lang.Long
+        </li>
+        <li>
+            java.lang.String
+        </li>
+    </ul>
+    <li>
+        Les types de base
+    </li>
+    <ul>
+        <li>
+            int
+        </li>
+        <li>
+            double
+        </li>
+        <li>
+            float
+        </li>
+        <li>
+            long
+        </li>
+    </ul>
+    <ul>
+
+    </ul>
+</ul>
+<h2>
+    Controlleur de votre projet:
+</h2>
+<ul>   
+    <li>
+        Ajouter des getters et setters pour tous les controllers 
+    </li>
+    <li>
+        <p>Importer les packages necessaires du framework:</p>
+        <pre>
+            <code>
+            import etu1840.framework.annotation.*;
+            import etu1840.framework.util.*;
+            </code>
+        </pre>
+    </li>
+    <li>
+        Ajouter une annotation <i>@Url(mapping=v0tre_mapping_url)</i> sur chaque methode
+        <pre>
+            <code>
+            @Url(mapping="all")
+            public ModelView all(){
+            </code>
+        </pre>
+    </li>
+    <li>
+        Chaque methode du controlleur doit retourner un ModelView. Un ModelView a deux attributs:
+            <ul>
+                <li>
+                    <p>
+                        <i>String view</i>: la page ou ira le controlleur 
+                    </p>
+                </li>
+                <li>
+                    <p>
+                        <i>HashMap&lt;String,Object&gt; data:</i> contenant les donnees que vouz voulez passer a la view
+                    </p>
+                    <p>
+                        Vous pouvez alimenter <i>data</i> en utilisant la methode <i>addItem(String key, Object value)</i>
+                    </p>
+                </li>
+
+                            <code>
+                            ModelView resp=new ModelView();
+                            
+                            </code>
+                            <br>
+                            <code>
+                            resp.addItem("liste",empList);
+                            </code>
+                            <br>
+                            <code>
+                            resp.setView("All.jsp");
+                            </code>
+                            <br>
+                            <code>
+                            resp.addItem("titre","Liste des employes");
+                            </code>
+                            <br>
+                            <code>
+                            return resp;
+                            </code>
+            </ul>
+    </li>
+    
+</ul>
+<h2>
+    View
+</h2>
+<ul>
+    <li>
+        Vous pouvez acceder aux <i>data</i> que vous avez faits passer depuis le controller via la methode <i>getAttribute</i> de la requete
+        <pre>
+            <%
+                Vector<Emp> liste=(Vector<Emp>) request.getAttribute("liste");
+                String title=(String) request.getAttribute("titre");
+            %>
+        </pre>
+    </li>
+</ul>
+
+<h2>
+    GET ET POST
+</h2>
+<ul>
+    <li>
+        
+        <p>Vous pouvez acceder aux donnees d'un formulaire ou d'un lien facilement puisque le framework alimente les attributs de la classe  du controlleur</p>
+        <ul>
+            <li>
+                Si vous avez une classe:
+                <pre>
+                public class Emp{
+                    private int id;
+                    private String nom;
+                    private String departement;
+                    private Date dateEmbauche;
+                </pre>
+                Les valeurs des attributs <i>name</i> de vos inputs doivent etre les memes que ceux de l'atribust de votre classe
+                <pre>
+                    &lt;form action="save"&gt;
+                        &lt;input type="text"  name="nom"&gt;
+                        &lt;input type="date" name="dateEmbauche"&gt;
+                        &lt;input type="text" value="departement" name="departement"&gt;
+                        &lt;input type="submit" value="Valider"&gt;
+                    &lt;/form&gt;
+                </pre>
+            </li>
+            <li>
+                Ainsi, dans la methode de votre controlleur:
+                <pre>
+                    @Url(mapping="save")
+                    public  ModelView save(){
+                        ModelView resp=new ModelView("Fiche.jsp");
+                        this.empList.add(this);
+                        resp.addItem("nom",this.nom);
+                        resp.addItem("date",this.dateEmbauche);
+                        return resp;
+                    }
+                </pre>
+            </li>
+        </ul>
+    </li>
+</ul>

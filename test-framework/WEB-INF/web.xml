@@ -24,15 +24,15 @@
   	
 
   <servlet>
-	<init-param>
-	    <param-name>baseUrl</param-name>
-	    <param-value>http://localhost:8080/test-framework/</param-value>
-	</init-param>
+    <init-param>
+        <param-name>baseUrl</param-name>
+        <param-value>http://localhost:8080/test-framework/</param-value>
+    </init-param>
       <servlet-name>FrontServlet</servlet-name>
       <servlet-class>etu1840.framework.servlet.FrontServlet</servlet-class>
-    </servlet>
-    <servlet-mapping>
-        <servlet-name>FrontServlet</servlet-name>
-        <url-pattern>/</url-pattern>
-    </servlet-mapping>
+  </servlet>
+  <servlet-mapping>
+      <servlet-name>FrontServlet</servlet-name>
+      <url-pattern>/</url-pattern>
+  </servlet-mapping>
 </web-app>
