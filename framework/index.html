@@ -1,3 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Documentation etu1840.framework</title>
+</head>
+<style>
+    #boldspan{
+        font-weight: bold;
+    }
+</style>
+<body>
+    
 <h2>
     Prerequis
 </h2>
@@ -17,16 +32,19 @@
             &lt;servlet&gt;
                 &lt;init-param&gt;
                     &lt;param-name&gt;baseUrl&lt;/param-name&gt;
-                    &lt;param-value&gt;http://localhost:8080/test-framework/&lt;/param-value&gt;
+                    <span id="boldspan">&lt;param-value&gt;http://localhost:8080/test-framework/&lt;/param-value&gt;</span>
                 &lt;/init-param&gt;
                   &lt;servlet-name&gt;FrontServlet&lt;/servlet-name&gt;
                   &lt;servlet-class&gt;etu1840.framework.servlet.FrontServlet&lt;/servlet-class&gt;
             &lt;/servlet&gt;
             &lt;servlet-mapping&gt;
                 &lt;servlet-name&gt;FrontServlet&lt;/servlet-name&gt;
-                &lt;url-pattern&gt;/&lt;/url-pattern&gt;
+                &lt;url-pattern&gt;*.do&lt;/url-pattern&gt;
             &lt;/servlet-mapping&gt;
         </pre>
+    </li>
+    <li>
+        Mettre les codes java dans <i>chemin_vers_le_projet/src/</i>
     </li>
 </ul>
 <h2>
@@ -91,10 +109,10 @@
         </pre>
     </li>
     <li>
-        Ajouter une annotation <i>@Url(mapping=v0tre_mapping_url)</i> sur chaque methode
+        Ajouter une annotation <i>@Url(mapping=votre_mapping_url.do)</i> sur chaque methode. Les mapping doivent se terminer par <span id="boldspan">.do</span>
         <pre>
             <code>
-            @Url(mapping="all")
+            @Url(mapping="all.do")
             public ModelView all(){
             </code>
         </pre>
@@ -172,20 +190,24 @@
                     private String departement;
                     private Date dateEmbauche;
                 </pre>
-                Les valeurs des attributs <i>name</i> de vos inputs doivent etre les memes que ceux de l'atribust de votre classe
+                Les valeurs des attributs <i>name</i> de vos inputs  doivent etre les memes que ceux de l'atribut de votre classe 
                 <pre>
                     &lt;form action="save"&gt;
-                        &lt;input type="text"  name="nom"&gt;
-                        &lt;input type="date" name="dateEmbauche"&gt;
-                        &lt;input type="text" value="departement" name="departement"&gt;
+                        &lt;input type="text"  <span id="boldspan">name="nom"</span>&gt;
+                        &lt;input type="date" <span id="boldspan">name="dateEmbauche"</span>&gt;
+                        &lt;input type="text" value="departement" <span id="boldspan">name="departement"</span>&gt;
                         &lt;input type="submit" value="Valider"&gt;
                     &lt;/form&gt;
+                </pre>
+                De même pour les name dans les querystrings
+                <pre>
+                    &lt;a href="fiche.do?<span id="boldspan">id</span>=80"&gt; Voir la fiche employe &lt;/a&gt;
                 </pre>
             </li>
             <li>
                 Ainsi, dans la methode de votre controlleur:
                 <pre>
-                    @Url(mapping="save")
+                    @Url(mapping="save.do")
                     public  ModelView save(){
                         ModelView resp=new ModelView("Fiche.jsp");
                         this.empList.add(this);
@@ -198,3 +220,5 @@
         </ul>
     </li>
 </ul>
+</body>
+</html>

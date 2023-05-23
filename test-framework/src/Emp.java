@@ -19,7 +19,7 @@ public class Emp{
     public void setDateEmbauche(Date date){
         this.dateEmbauche=date;
     }
-    @Url(mapping="all")
+    @Url(mapping="all.do")
     public ModelView all(){
         this.empList = new Vector<>();
 
@@ -59,13 +59,13 @@ public class Emp{
         return resp;
     }
 
-    @Url(mapping="form")
+    @Url(mapping="form.do")
     public ModelView addform(){
         ModelView resp=new ModelView("Formulaire.jsp");
         return resp;
     }
 
-    @Url(mapping="save")
+    @Url(mapping="save.do")
     public  ModelView save(String prenom){
         ModelView resp=new ModelView("Fiche.jsp");
         resp.addItem("titre","Nouvel employe");
