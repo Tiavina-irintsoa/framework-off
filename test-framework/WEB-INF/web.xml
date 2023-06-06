@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-  Licensed to the Apache Software Foundation (ASF) under one or more
+  Licensed to th  Licensed to th  Licensed to the Apache Software Foundation (ASF) under one or more
+e Apache Software Foundation (ASF) under one or more
+e Apache Software Foundation (ASF) under one or more
   contributor license agreements.  See the NOTICE file distributed with
   this work for additional information regarding copyright ownership.
   The ASF licenses this file to You under the Apache License, Version 2.0
@@ -22,14 +24,17 @@
   version="5.0"
   metadata-complete="true">
   	
-
   <servlet>
     <init-param>
         <param-name>baseUrl</param-name>
         <param-value>http://localhost:8080/test-framework/</param-value>
     </init-param>
-      <servlet-name>FrontServlet</servlet-name>
-      <servlet-class>etu1840.framework.servlet.FrontServlet</servlet-class>
+    <multipart-config>
+      <max-file-size>50000000</max-file-size>
+      <max-request-size>800000000000</max-request-size>
+    </multipart-config>
+    <servlet-name>FrontServlet</servlet-name>
+    <servlet-class>etu1840.framework.servlet.FrontServlet</servlet-class>
   </servlet>
   <servlet-mapping>
       <servlet-name>FrontServlet</servlet-name>

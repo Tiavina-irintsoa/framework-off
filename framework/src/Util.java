@@ -1,7 +1,8 @@
 package etu1840.framework.util;
 import java.util.Enumeration;
 import java.lang.reflect.*;
-
+import jakarta.servlet.http.Part;
+import java.io.*;
 public class Util{
     public static String getUrlMapping(String url,String base_url){
         int len = base_url.length();
@@ -16,7 +17,20 @@ public class Util{
                 return method;
             }
         }
-        throw new Exception("Setter pour "+field+" non trouve");
+        return null;
+    }
+    
+    public static byte[] getBytesFromPart(Part part) throws IOException {
+        InputStream inputStream = part.getInputStream();
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        byte[] buffer = new byte[4096]; // or any other suitable buffer size
+
+        int bytesRead;
+        while ((bytesRead = inputStream.read(buffer)) != -1) {
+            outputStream.write(buffer, 0, bytesRead);
+        }
+
+        return outputStream.toByteArray();
     }
     public static Method getMethod (Class<?> classe, String methodname) throws Exception{
         for (Method method: classe.getDeclaredMethods()){
@@ -26,12 +40,5 @@ public class Util{
         }
         throw new ClassNotFoundException();
     }
-    public static void set(Object objet,String field,String value,Class<?> classe) throws Exception{
-        for(Field f: classe.getDeclaredFields()){
-            if(f.getName().compareToIgnoreCase(field)==0){
-                Method setter=getSetter(classe,field);
-                setter.invoke(objet,StringCaster.cast(value,setter.getParameterTypes()[0]));
-            }
-        }
-    }    
+        
 }

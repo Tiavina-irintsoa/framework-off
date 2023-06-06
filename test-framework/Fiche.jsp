@@ -14,7 +14,8 @@
 </head>
 <body>
     <%
-        out.println((String) request.getParameter("prenom"));
+        out.println((String) request.getAttribute("prenom"));
+        out.println((String) request.getAttribute("filename"));
     %>
 </body>
 </html>

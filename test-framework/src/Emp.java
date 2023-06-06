@@ -4,17 +4,26 @@ import etu1840.framework.util.*;
 import java.util.Vector;
 import java.util.Date;
 import java.lang.reflect.*;
+import java.io.FileOutputStream;
+
 public class Emp{
     private int id;
     private String nom;
     private String departement;
     private Date dateEmbauche;
+    private FileUpload cin;
     Vector<Emp> empList;
     public void setId(int id){
         this.id=id;
     }
     public int getId(){
         return this.id;
+    }
+    public FileUpload getCin() {
+        return cin;
+    }
+    public void setCin(FileUpload cin) {
+        this.cin = cin;
     }
     public void setDateEmbauche(Date date){
         this.dateEmbauche=date;
@@ -70,7 +79,28 @@ public class Emp{
         ModelView resp=new ModelView("Fiche.jsp");
         resp.addItem("titre","Nouvel employe");
         resp.addItem("prenom", prenom);
-        return resp;
+        resp.addItem("filename",cin.getName());
+        try{
+            FileOutputStream fos = null;
+            try {
+                fos = new FileOutputStream(cin.getName());
+                fos.write(cin.getBytes());
+                System.out.println("Le fichier a été sauvegardé avec succès :");
+            } finally {
+                if (fos != null) {
+                    fos.close();
+                }
+            }
+            System.out.println(cin.getName()+"oooo");
+            
+        }
+        catch(Exception e){
+            e.printStackTrace();
+        }
+        finally{
+            return resp;
+        }
+        
     }
     public Emp(){
         
