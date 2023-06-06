@@ -1,0 +1,7 @@
+Sprint:
+    ☐ Creation annotation scope
+    ☐ lors du parcours des classes si la classe a une annotation Scope: ajouter dans HashMap<String,Object> singleton et HashMap <Class, Fields> fields 
+    ☐ Ajouter Field[] dans Field
+    ☐ creeer la fonction Util.reset(Object)
+    ☐ Frontservlet.processRequest: si la classe existe dans Hashmap singleton : si Object est null, instancier, sinon reset tous les attributs par les valeurs par defaut, si elle n'existe pas: instancier
+    ☐ modifier tous les reflects pour avoir fields par Fields
