@@ -5,15 +5,23 @@ public class ModelView {
     
     private String view;
     private HashMap<String,Object> data;
+    private HashMap<String,Object> session =  new HashMap<String,Object>();
 
     public ModelView(){
-        
+
+    }
+
+    public void addSession(String key, Object value){
+        this.session.put(key,value);
     }
     public ModelView(String view) {
         this.view = view;
     }
     public String getView() {
         return view;
+    }
+    public  HashMap<String,Object> getSession() {
+        return session;
     }
     public void setView(String view) {
         this.view = view;

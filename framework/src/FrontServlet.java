@@ -5,34 +5,30 @@ import jakarta.servlet.http.*;
 import java.text.*;
 import java.util.*;
 import etu1840.framework.*;
-import etu1840.framework.annotation.*;
 import etu1840.framework.util.*;
+import etu1840.framework.annotation.*;
+
 import java.lang.reflect.*;
 
 public class FrontServlet extends HttpServlet{
     HashMap<String,Mapping> MappingUrls;
+    HashMap<String,Object> singletons;
+    HashMap<String,Field[]> classFields;
     String baseUrl;
+    String sessionName;
+
     public void init() throws ServletException{
         this.baseUrl=this.getInitParameter("baseUrl");
-        String packagename="";
+        this.sessionName=this.getInitParameter("sessionName");
         this.MappingUrls=new HashMap<String,Mapping>();
+        this.singletons=new HashMap<String,Object>();
+        this.classFields=new HashMap<String,Field[]>();
         try{
-            MyPackage p=new MyPackage();
-            Vector<Class<?>> classes=p.getClasses(packagename);
-            for(Class c : classes){
-                Method[] methods=c.getDeclaredMethods();
-                for (Method method : methods){
-                    if(method.isAnnotationPresent(Url.class)==true){
-                        Mapping mapping=new Mapping(c.getName(),method.getName());
-                        String url=method.getAnnotation(Url.class).mapping();
-                        this.MappingUrls.put(url,mapping);
-                    }
-                }
-            }   
+            Util.setFrontServletAttribute(this.MappingUrls,this.singletons,this.classFields);
         }
-       catch(ClassNotFoundException e){
-            e.printStackTrace();
-       }
+        catch(Exception e){
+                e.printStackTrace();
+        }
     }
     protected void doGet(HttpServletRequest request, HttpServletResponse response)throws ServletException, IOException {
         processRequest(request,response);
@@ -60,7 +56,6 @@ public class FrontServlet extends HttpServlet{
             set(object,paramName,request.getParameter(paramName),classe,request);
         }
         }
-        
     }
 
     //setter les arguments de l'objet
@@ -105,19 +100,20 @@ public class FrontServlet extends HttpServlet{
         Object[] argvalue = new Object[parameters.length];
         String[] parameterArray = Collections.list(parameterNames).toArray(new String[0]);
         int argindex=0;
-        for (Parameter arg : parameters) {
-            boolean found_a_parameter=false;
-            String name = arg.getName();
-            for (String paramName : parameterArray) {
-                System.out.println(paramName+" et "+name);
-                if(paramName.compareToIgnoreCase(arg.getName())==0){  
-                    argvalue[argindex]=StringCaster.cast(request.getParameter(paramName),arg.getType() );
-                    argindex++;
-                    found_a_parameter=true;
+        
+        if(method.isAnnotationPresent(Parameters.class)){
+            boolean found_a_parameter = false;
+            for (Parameter arg : parameters) {
+                found_a_parameter=false;
+                for (String paramName : parameterArray) {
+                    if(method.getAnnotation(Parameters.class).args()[argindex].compareTo(paramName)==0){  
+                        argvalue[argindex]=StringCaster.cast(request.getParameter(paramName),arg.getType() );
+                        found_a_parameter=true;
+                    }
                 }
-            }
-            if(!found_a_parameter){
-                argvalue[argindex]=null;
+                if(found_a_parameter){
+                    argindex++;
+                }
             }
         }
         return argvalue;
@@ -127,6 +123,28 @@ public class FrontServlet extends HttpServlet{
             request.setAttribute(entry.getKey(),entry.getValue());
             System.out.println(entry.getKey()+"  "+ entry.getValue());
         }   
+    }
+    protected void setSession(HashMap<String,Object> data, HttpSession session){
+        for(Map.Entry<String,Object> entry : data.entrySet()){
+            session.setAttribute(entry.getKey(),entry.getValue());
+        } 
+    }
+    protected boolean authentified(HttpSession session, Method methode){
+            if (methode.isAnnotationPresent(Auth.class)==true){
+                String profile = methode.getAnnotation(Auth.class).profile();
+                if(profile .compareTo("")==0){
+                    if(session.getAttribute(this.sessionName)!=null){
+                        return true;
+                    }
+                }
+                else{
+                    if(session.getAttribute(profile)!=null){
+                        return true;
+                    }
+                }
+                return false;  
+            }
+            return true;
     }
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)throws ServletException, IOException{
         PrintWriter out=response.getWriter();
@@ -139,11 +157,30 @@ public class FrontServlet extends HttpServlet{
             if(mapping==null){
                 throw new Exception("Aucun mapping trouve pour "+urlmapping);
             }
+            String classname= mapping.getClassName();
             //instancier l'objet
-            Class<?> classe=Class.forName(mapping.getClassName());
-            Constructor<?> constructor = classe.getConstructor();
-            Object classinstance=constructor.newInstance();
+            Class<?> classe=Class.forName(classname);
 
+            Object classinstance =null;
+            //test si la classe est singleton:
+            if(this.singletons.containsKey(classname)){
+                classinstance = this.singletons.get(classname);
+                if(classinstance==null){
+                    System.out.println("created singleton"+ classname);
+                    Constructor<?> constructor = classe.getConstructor();
+                     classinstance=constructor.newInstance();
+                    this.singletons.put(classname,classinstance);
+                }
+                else{
+                     Util.resetAttributes(classinstance,classname,this.classFields);
+                }
+            }
+            //si la classe n'a pas d'annotations singletons
+            else{
+                Constructor<?> constructor = classe.getConstructor();
+                classinstance=constructor.newInstance();
+                System.out.println("created non-singleton");
+            }            
             //alimenter les attributs de l'objet
             setObject(classinstance,request,classe);
             System.out.println("finished setting fields");
@@ -151,13 +188,20 @@ public class FrontServlet extends HttpServlet{
             Method methode = Util.getMethod(classe,mapping.getMethod());
             //arguments de la fonction
             Object[] args=getArguments(request, methode);
+            HttpSession session = request.getSession();
 
+            // si la methode a une annotation @auth
+            if(!authentified(session,methode)){
+                throw new Exception("Vous n'avez pas la permission necessaire");
+            }
             //envoyer les data dans la page
             ModelView modelview=(ModelView) methode.invoke(classinstance,args);  
+
 
             if(modelview.getData()!=null){
                 setRequestAttribute(request,modelview.getData());
             }
+            setSession(modelview.getSession(),session);
             //dispatcher la requete
             RequestDispatcher dispat = request.getRequestDispatcher(modelview.getView());
             dispat.forward(request,response);

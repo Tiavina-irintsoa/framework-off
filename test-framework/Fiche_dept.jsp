@@ -1,7 +1,6 @@
 <%@ page import="packages.*"%>
 <%@ page import="java.util.Vector"%>
 <%
-    Vector<Emp> liste=(Vector<Emp>) request.getAttribute("liste");
     String title=(String) request.getAttribute("titre");
 %>
 <!DOCTYPE html>
@@ -15,7 +14,6 @@
 <body>
     <%
         out.println((String) request.getAttribute("nom"));
-        out.println((String) request.getAttribute("prenom"));
     %>
 </body>
 </html>

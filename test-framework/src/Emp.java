@@ -6,13 +6,13 @@ import java.util.Date;
 import java.lang.reflect.*;
 import java.io.FileOutputStream;
 
+@Scope(scope="Singleton")
 public class Emp{
     private int id;
     private String nom;
     private String departement;
     private Date dateEmbauche;
     private FileUpload cin;
-    Vector<Emp> empList;
     public void setId(int id){
         this.id=id;
     }
@@ -28,71 +28,59 @@ public class Emp{
     public void setDateEmbauche(Date date){
         this.dateEmbauche=date;
     }
-    @Url(mapping="all.do")
-    public ModelView all(){
-        this.empList = new Vector<>();
-
-        Emp emp1 = new Emp();
-        emp1.setNom("John Doe");
-        emp1.setDepartement("RH");
-        empList.add(emp1);
-
-        Emp emp2 = new Emp();
-        emp2.setNom("Jane Smith");
-        emp2.setDepartement("Finance");
-        empList.add(emp2);
-
-        Emp emp3 = new Emp();
-        emp3.setNom("Bob Johnson");
-        emp3.setDepartement("IT");
-        empList.add(emp3);
-
-        Emp emp4 = new Emp();
-        emp4.setNom("Emily Watson");
-        emp4.setDepartement("Marketing");
-        empList.add(emp4);
-
-        Emp emp5 = new Emp();
-        emp5.setNom("Alex Turner");
-        emp5.setDepartement("Design");
-        empList.add(emp5);
-
-        Emp emp6 = new Emp();
-        emp6.setNom("Jessica Lee");
-        emp6.setDepartement("Sales");
-        empList.add(emp6);
-        ModelView resp=new ModelView();
-        resp.setView("All.jsp");
-        resp.addItem("titre","Liste des employes");
-        resp.addItem("liste",empList);
-        return resp;
-    }
+    
 
     @Url(mapping="form.do")
     public ModelView addform(){
         ModelView resp=new ModelView("Formulaire.jsp");
         return resp;
     }
+    @Auth(profile="admin")
+    @Url(mapping="admin_test.do")
+    public ModelView test_admin(){
+        ModelView resp=new ModelView("Formulaire.jsp");
+        return resp;
+    }
+    @Url(mapping="admin.do")
+    public ModelView addAdmin(){
+       ModelView resp = new ModelView("Added.jsp");
+        resp.addSession("isConnected",true);
+        resp.addSession("admin",new Emp());
+        resp.addItem("profile","admin");
+        return resp;
+    }
 
+    @Url(mapping="user.do")
+    public ModelView addUser(){
+        ModelView resp = new ModelView("Added.jsp");
+        resp.addSession("isConnected",true);
+        resp.addSession("user",new Emp());
+        resp.addItem("profile","user");
+        return resp;
+    }
+
+    @Parameters(args={"prenom", "num"})
+    @Auth()
     @Url(mapping="save.do")
-    public  ModelView save(String prenom){
+    public  ModelView save(String prenom, int num){
         ModelView resp=new ModelView("Fiche.jsp");
         resp.addItem("titre","Nouvel employe");
+        resp.addItem("nom", nom);
+        System.out.println(prenom);
         resp.addItem("prenom", prenom);
+        resp.addItem("num", num + 4);
         resp.addItem("filename",cin.getName());
         try{
             FileOutputStream fos = null;
             try {
                 fos = new FileOutputStream(cin.getName());
                 fos.write(cin.getBytes());
-                System.out.println("Le fichier a été sauvegardé avec succès :");
-            } finally {
+            } 
+            finally {
                 if (fos != null) {
                     fos.close();
                 }
             }
-            System.out.println(cin.getName()+"oooo");
-            
         }
         catch(Exception e){
             e.printStackTrace();
@@ -100,7 +88,6 @@ public class Emp{
         finally{
             return resp;
         }
-        
     }
     public Emp(){
         
