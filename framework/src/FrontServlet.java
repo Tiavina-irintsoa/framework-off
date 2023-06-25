@@ -129,6 +129,12 @@ public class FrontServlet extends HttpServlet{
             session.setAttribute(entry.getKey(),entry.getValue());
         } 
     }
+    protected void removeSession( ArrayList<String> removed,HttpSession session) {
+        for (String attributeName : removed) {
+            session.removeAttribute(attributeName);
+        }
+    }
+    
     protected boolean authentified(HttpSession session, Method methode){
             if (methode.isAnnotationPresent(Auth.class)==true){
                 String profile = methode.getAnnotation(Auth.class).profile();
@@ -146,6 +152,19 @@ public class FrontServlet extends HttpServlet{
             }
             return true;
     }
+    protected HashMap<String, Object> getSessionData(HttpSession session) {
+        Session sessionObject = new Session();
+        HashMap<String, Object> content = new HashMap<>();
+    
+        Enumeration<String> attributeNames = session.getAttributeNames();
+        while (attributeNames.hasMoreElements()) {
+            String attributeName = attributeNames.nextElement();
+            Object attributeValue = session.getAttribute(attributeName);
+            content.put(attributeName, attributeValue);
+        }
+        return content;
+    }
+    
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)throws ServletException, IOException{
         PrintWriter out=response.getWriter();
 
@@ -194,6 +213,25 @@ public class FrontServlet extends HttpServlet{
             if(!authentified(session,methode)){
                 throw new Exception("Vous n'avez pas la permission necessaire");
             }
+
+            if(methode.isAnnotationPresent(Sess.class)){
+                Field[] fields = this.classFields.get(classname);
+                Field sessionField = Util.findField(fields, "session"); 
+
+                if(sessionField == null){
+                    throw new Exception("Vous devez avoir un attribut HashMap Session dans votre controller");
+                }
+
+                Method setterSession = Util.getSetter(classe, "session");
+                if(setterSession==null){
+                    throw new Exception("Veuillez créer un getter pour l'attribut session");
+                }
+                Object[] params = new Object[]{
+                    getSessionData(session)
+                };
+                setterSession.invoke(classinstance, params);
+
+            }
             //envoyer les data dans la page
             ModelView modelview=(ModelView) methode.invoke(classinstance,args);  
 
@@ -201,10 +239,19 @@ public class FrontServlet extends HttpServlet{
             if(modelview.getData()!=null){
                 setRequestAttribute(request,modelview.getData());
             }
-            setSession(modelview.getSession(),session);
+            if(modelview.getSession()!=null){
+                if(modelview.getSession().getRemoved()!=null){
+                    removeSession(modelview.getSession().getRemoved(),session);
+                }
+                if(modelview.getSession().getContent()!=null){
+                    setSession(modelview.getSession().getContent(),session);
+                }
+            }
             //dispatcher la requete
-            RequestDispatcher dispat = request.getRequestDispatcher(modelview.getView());
-            dispat.forward(request,response);
+            if(modelview.getView()!=null){
+                RequestDispatcher dispat = request.getRequestDispatcher(modelview.getView());
+                dispat.forward(request,response);
+            }
         } catch (Exception e) {
             e.printStackTrace();
             out.println(e.getMessage());

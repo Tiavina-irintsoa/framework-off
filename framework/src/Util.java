@@ -7,6 +7,15 @@ import java.util.*;
 import etu1840.framework.*;
 
 public class Util{
+
+    public static Field findField(Field[] fields, String name){
+        for (int i = 0; i < fields.length; i++) {
+            if (fields[i].getName().compareTo(name)==0) {
+                return fields[i];
+            }
+        }
+        return null;
+    }
     public static String getUrlMapping(String url,String base_url){
         int len = base_url.length();
         return url.substring(len);
