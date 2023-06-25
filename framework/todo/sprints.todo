@@ -20,4 +20,4 @@ String 12:
     ☐ FrontServlet: si @session => alimenter session.content;
     ☐ FrontServlet: supprimer dans remove;
     ☐ FrontServlet: setAttribute(dans add)
-    ☐
+    ☐ 

@@ -7,9 +7,6 @@ public class ModelView {
     private HashMap<String,Object> data;
     private HashMap<String,Object> session =  new HashMap<String,Object>();
 
-    public ModelView(){
-
-    }
 
     public void addSession(String key, Object value){
         this.session.put(key,value);
