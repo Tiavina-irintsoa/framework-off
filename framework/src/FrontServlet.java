@@ -7,6 +7,7 @@ import java.util.*;
 import etu1840.framework.*;
 import etu1840.framework.util.*;
 import etu1840.framework.annotation.*;
+import com.google.gson.Gson;
 
 import java.lang.reflect.*;
 
@@ -230,14 +231,19 @@ public class FrontServlet extends HttpServlet{
                     getSessionData(session)
                 };
                 setterSession.invoke(classinstance, params);
-
             }
             //envoyer les data dans la page
             ModelView modelview=(ModelView) methode.invoke(classinstance,args);  
 
 
-            if(modelview.getData()!=null){
+            if(modelview.getData()!=null && modelview.isJSON()==false){
                 setRequestAttribute(request,modelview.getData());
+            }
+            if(modelview.isJSON()){
+                response.setContentType("application/json");
+                Gson gson = new Gson();
+                String json = gson.toJson(modelview.getData());
+                out.println(json);
             }
             if(modelview.getSession()!=null){
                 if(modelview.getSession().getRemoved()!=null){
@@ -247,6 +253,7 @@ public class FrontServlet extends HttpServlet{
                     setSession(modelview.getSession().getContent(),session);
                 }
             }
+            
             //dispatcher la requete
             if(modelview.getView()!=null){
                 RequestDispatcher dispat = request.getRequestDispatcher(modelview.getView());
