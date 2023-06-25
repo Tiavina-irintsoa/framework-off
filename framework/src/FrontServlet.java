@@ -233,32 +233,36 @@ public class FrontServlet extends HttpServlet{
                 setterSession.invoke(classinstance, params);
             }
             //envoyer les data dans la page
-            ModelView modelview=(ModelView) methode.invoke(classinstance,args);  
+            Object returned = methode.invoke(classinstance,args);
 
-
-            if(modelview.getData()!=null && modelview.isJSON()==false){
-                setRequestAttribute(request,modelview.getData());
-            }
-            if(modelview.isJSON()){
+            if(methode.isAnnotationPresent(JSON.class)){
                 response.setContentType("application/json");
                 Gson gson = new Gson();
-                String json = gson.toJson(modelview.getData());
+                String json = gson.toJson(returned);
                 out.println(json);
             }
-            if(modelview.getSession()!=null){
-                if(modelview.getSession().getRemoved()!=null){
-                    removeSession(modelview.getSession().getRemoved(),session);
+            else{
+                ModelView modelview=(ModelView) returned;
+                if(modelview.getData()!=null){
+                    setRequestAttribute(request,modelview.getData());
                 }
-                if(modelview.getSession().getContent()!=null){
-                    setSession(modelview.getSession().getContent(),session);
+                
+                if(modelview.getSession()!=null){
+                    if(modelview.getSession().getRemoved()!=null){
+                        removeSession(modelview.getSession().getRemoved(),session);
+                    }
+                    if(modelview.getSession().getContent()!=null){
+                        setSession(modelview.getSession().getContent(),session);
+                    }
+                }
+                
+                //dispatcher la requete
+                if(modelview.getView()!=null){
+                    RequestDispatcher dispat = request.getRequestDispatcher(modelview.getView());
+                    dispat.forward(request,response);
                 }
             }
-            
-            //dispatcher la requete
-            if(modelview.getView()!=null){
-                RequestDispatcher dispat = request.getRequestDispatcher(modelview.getView());
-                dispat.forward(request,response);
-            }
+           
         } catch (Exception e) {
             e.printStackTrace();
             out.println(e.getMessage());
