@@ -95,7 +95,8 @@ public class Emp{
     }
 
     @Url(mapping="json.do")
-    public ModelView json(){
+    @JSON
+    public Vector<Emp> json(){
         Vector<Emp> employees = new Vector<>();
         // Création d'objets Emp et ajout au vecteur
         Emp emp1 = new Emp(1, "John Doe", "Ressources humaines");
@@ -105,13 +106,7 @@ public class Emp{
         employees.add(emp1);
         employees.add(emp2);
         employees.add(emp3);
-        ModelView resp = new ModelView();
-        resp.setJSON(true);
-        resp.addItem("profile","user");
-        resp.addItem("cle","valeur");
-        resp.addItem("objet", new Object());
-        resp.addItem("liste", employees);
-        return resp;
+        return employees;
     }
 
     
