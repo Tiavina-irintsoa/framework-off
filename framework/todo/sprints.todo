@@ -5,7 +5,6 @@ Sprint10:
     ✔ creeer la fonction Util.reset(Object) @done(23-06-09 09:08)
     ✔ Frontservlet.processRequest: si la classe existe dans Hashmap singleton : si Object est null, instancier, sinon reset tous les attributs par les valeurs par defaut, si elle n'existe pas: instancier @done(23-06-09 09:08)
     ☐ modifier tous les reflects pour avoir fields par Fields
-    ☐ Ajout annotation 
 
 Sprint 11:
     ✔ Ajouter sessionName dans web.xml @done(23-06-12 13:49)
@@ -20,3 +19,13 @@ String 12:
     ☐ FrontServlet: si @session => alimenter session.content;
     ☐ FrontServlet: supprimer dans remove;
     ☐ FrontServlet: setAttribute(dans add)
+Sprint 13: 
+    ☐ Ajouter un attribut boolean isJSON dans ModelView
+    ☐ processRequest: si true: json encode l'attribut data de modelview (utlisation de la librairie gson ) et l'afficher
+    ☐ modifier le content type du response en json 
+
+Sprint 14 :
+    ☐ creer une annotation json
+    ☐ controller: type de retour: tsy modelview 
+    ☐ json le type de retour de la fonction 
+    ☐ out.print
