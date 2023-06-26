@@ -13,11 +13,20 @@ public class Emp{
     private int id;
     private String nom;
     private String departement;
+    public Emp(String nom, String departement) {
+        this.nom = nom;
+        this.departement = departement;
+    }
     private Date dateEmbauche;
     private FileUpload cin;
     private HashMap<String,Object> session;
 
     
+    public Emp(int id, String nom, String departement) {
+        this.id = id;
+        this.nom = nom;
+        this.departement = departement;
+    }
     public void setId(int id){
         this.id=id;
     }
@@ -82,6 +91,26 @@ public class Emp{
         resp.getSession().setAttribute("isConnected",true);
         resp.getSession().setAttribute("user",new Emp());
         resp.addItem("profile","user");
+        return resp;
+    }
+
+    @Url(mapping="json.do")
+    public ModelView json(){
+        Vector<Emp> employees = new Vector<>();
+        // Création d'objets Emp et ajout au vecteur
+        Emp emp1 = new Emp(1, "John Doe", "Ressources humaines");
+        Emp emp2 = new Emp(2, "Jane Smith", "Ventes");
+        Emp emp3 = new Emp(3, "Bob Johnson", "Développement");
+        
+        employees.add(emp1);
+        employees.add(emp2);
+        employees.add(emp3);
+        ModelView resp = new ModelView();
+        resp.setJSON(true);
+        resp.addItem("profile","user");
+        resp.addItem("cle","valeur");
+        resp.addItem("objet", new Object());
+        resp.addItem("liste", employees);
         return resp;
     }
 
