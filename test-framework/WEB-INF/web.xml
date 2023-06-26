@@ -29,6 +29,10 @@ e Apache Software Foundation (ASF) under one or more
         <param-name>baseUrl</param-name>
         <param-value>http://localhost:8080/test-framework/</param-value>
     </init-param>
+    <init-param>
+        <param-name>sessionName</param-name>
+        <param-value>isConnected</param-value>
+    </init-param>
     <multipart-config>
       <max-file-size>50000000</max-file-size>
       <max-request-size>800000000000</max-request-size>

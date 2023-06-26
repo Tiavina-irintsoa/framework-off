@@ -27,7 +27,7 @@ mkdir $temp_directory
 cp -R $project_directory $temp_directory
 
 #compilation des classes dans le dossier temporaire
-javac  -d  $temp_directory/$project_name/WEB-INF/classes -parameters  $temp_directory/$project_name/src/*.java 
+javac  -d  $temp_directory/$project_name/WEB-INF/classes   $temp_directory/$project_name/src/*.java 
 
 #creation du fichier .war
 cd $temp_directory/$project_name

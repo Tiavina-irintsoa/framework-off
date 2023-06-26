@@ -3,6 +3,7 @@ public class Mapping {
     private String className;
     private String method;
     
+    
     public Mapping(String className, String method) {
         setClassName(className);
         setMethod(method);
