@@ -1,11 +1,11 @@
 project_name="test-framework"
-project_directory="/home/tiavina/tita/gitframework/test-framework";
-temp_directory="/home/tiavina/tita/temp";
-server_directory="/home/tiavina/tita/apache-tomcat-10.0.22/webapps/";
-build="/home/tiavina/tita/gitframework/framework/build";
-fw_src="/home/tiavina/tita/gitframework/framework/src/*.java";
-jar_path="/home/tiavina/tita/gitframework/framework.jar";
-lib_path="/home/tiavina/tita/gitframework/test-framework/WEB-INF/lib/framework.jar";
+project_directory="/home/tiavina/S4/MrNaina/gitframework/test-framework";
+temp_directory="/home/tiavina/temp";
+server_directory="/home/tiavina/apache-tomcat-10.0.27/webapps/";
+build="/home/tiavina/S4/MrNaina/gitframework/framework/build";
+fw_src="/home/tiavina/S4/MrNaina/gitframework/framework/src/*.java";
+jar_path="/home/tiavina/S4/MrNaina/gitframework/framework.jar";
+lib_path="/home/tiavina/S4/MrNaina/gitframework/test-framework/WEB-INF/lib/framework.jar";
 
 #compilation des classes du framework
 
