@@ -5,6 +5,7 @@ import java.io.*;
 import etu1840.framework.annotation.*;
 import java.util.*;
 import etu1840.framework.*;
+import com.google.gson.Gson;
 
 public class Util{
 
@@ -41,12 +42,23 @@ public class Util{
                 }
             }   
     }
+    public static String jsonEncode(Object o){
+        Gson gson = new Gson();
+        String json = gson.toJson(o);
+        return json;
+            
+    }
     public static Method getSetter(Class<?> classe,String field) throws Exception{
         for (Method method: classe.getDeclaredMethods()){
             if(method.getName().compareToIgnoreCase("set"+field)==0){
-                System.out.println(method.getName());
-                System.out.println("cond1");
-                System.out.println("done");
+                return method;
+            }
+        }
+        return null;
+    }
+    public static Method getGetter(Class<?> classe,String field) throws Exception{
+        for (Method method: classe.getDeclaredMethods()){
+            if(method.getName().compareToIgnoreCase("get"+field)==0){
                 return method;
             }
         }

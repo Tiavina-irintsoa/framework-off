@@ -4,30 +4,30 @@ import java.util.HashMap;
 import java.util.ArrayList;
 
 public class Session {
-    HashMap<String, Object> content;
     ArrayList<String> removed;
-
+    boolean invalidate = false;
     public void removeAttribute(String key){
         if (this.removed==null) {
             this.removed=new ArrayList<String>();
         }
         this.removed.add(key);
     }
-    public void setAttribute(String key, Object value){
-        if (this.content== null) {
-            this.content = new HashMap<>();
+    
+    public boolean isInvalidate(){
+        return invalidate;
+    }
+    public void setInvalidate(boolean inv){
+        this.invalidate = inv;
+    }
+    
+    public void remove(String remove){
+        if(removed==null){
+            removed = new ArrayList<String>();
         }
-        this.content.put(key, value);
+        removed.add(remove);
     }
-    public Object getAttribute(String key){
-        return content.get(key);
-    }
-    public HashMap<String, Object> getContent() {
-        return content;
-    }
-    public void setContent(HashMap<String, Object> content) {
-        this.content = content;
-    }
+
+
     public ArrayList<String> getRemoved() {
         return removed;
     }

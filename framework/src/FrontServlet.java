@@ -7,7 +7,6 @@ import java.util.*;
 import etu1840.framework.*;
 import etu1840.framework.util.*;
 import etu1840.framework.annotation.*;
-import com.google.gson.Gson;
 
 import java.lang.reflect.*;
 
@@ -215,52 +214,71 @@ public class FrontServlet extends HttpServlet{
                 throw new Exception("Vous n'avez pas la permission necessaire");
             }
 
+            //si @sess
             if(methode.isAnnotationPresent(Sess.class)){
                 Field[] fields = this.classFields.get(classname);
                 Field sessionField = Util.findField(fields, "session"); 
 
+                //verifier si la classe a un attribut session
                 if(sessionField == null){
                     throw new Exception("Vous devez avoir un attribut HashMap Session dans votre controller");
                 }
 
                 Method setterSession = Util.getSetter(classe, "session");
                 if(setterSession==null){
-                    throw new Exception("Veuillez créer un getter pour l'attribut session");
+                    throw new Exception("Veuillez créer un getter et un setter pour l'attribut session");
                 }
                 Object[] params = new Object[]{
                     getSessionData(session)
                 };
                 setterSession.invoke(classinstance, params);
             }
-            //envoyer les data dans la page
+            //valeur de retour de la methode 
             Object returned = methode.invoke(classinstance,args);
-
+            
+            
+            //si @json
             if(methode.isAnnotationPresent(JSON.class)){
+                //afficher le json
                 response.setContentType("application/json");
-                Gson gson = new Gson();
-                String json = gson.toJson(returned);
+                String json = Util.jsonEncode(returned);
                 out.println(json);
             }
+            //sinon
             else{
                 ModelView modelview=(ModelView) returned;
                 if(modelview.getData()!=null){
                     setRequestAttribute(request,modelview.getData());
                 }
                 
+                //session venant de la classe emp
+                Method getter = Util.getGetter(classe,"session");
+
+                HashMap<String,Object> newsession = (HashMap<String,Object>)  getter.invoke(classinstance);
+                if(newsession!=null){
+                    setSession(newsession,session);
+                }
                 if(modelview.getSession()!=null){
                     if(modelview.getSession().getRemoved()!=null){
                         removeSession(modelview.getSession().getRemoved(),session);
                     }
-                    if(modelview.getSession().getContent()!=null){
-                        setSession(modelview.getSession().getContent(),session);
+                    if(modelview.getSession().isInvalidate()){
+                        session.invalidate();
                     }
                 }
                 
+                if(modelview.isJson() && modelview.getData()!=null ){
+                    response.setContentType("application/json");
+                    String json = Util.jsonEncode(modelview.getData());
+                    out.print(json);
+                }
                 //dispatcher la requete
-                if(modelview.getView()!=null){
+                else if(modelview.getView()!=null){
                     RequestDispatcher dispat = request.getRequestDispatcher(modelview.getView());
                     dispat.forward(request,response);
                 }
+
+                
             }
            
         } catch (Exception e) {
